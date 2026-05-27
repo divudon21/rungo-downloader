@@ -43,10 +43,6 @@ fun HomeScreen(
         topBar = {
             TopAppBar(
                 title = { Text("FastGo") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ),
                 actions = {
                     IconButton(onClick = { viewModel.deleteAll() }) {
                         Icon(Icons.Default.Delete, contentDescription = "Delete All Files")

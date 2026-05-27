@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
@@ -16,16 +17,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.agon.app.data.ThemeMode
 import com.agon.app.ui.screens.HomeScreen
 import com.agon.app.ui.screens.HistoryScreen
 import com.agon.app.ui.screens.SettingsScreen
 import com.agon.app.ui.theme.AgonAppTheme
+import com.agon.app.viewmodel.SettingsViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -45,7 +49,17 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            AgonAppTheme {
+            val settingsViewModel: SettingsViewModel = viewModel()
+            val themeMode by settingsViewModel.themeMode.collectAsState()
+            val amoledMode by settingsViewModel.amoledMode.collectAsState()
+            
+            val isDark = when(themeMode) {
+                ThemeMode.LIGHT -> false
+                ThemeMode.DARK -> true
+                ThemeMode.SYSTEM -> isSystemInDarkTheme()
+            }
+
+            AgonAppTheme(darkTheme = isDark, amoledMode = amoledMode) {
                 val navController = rememberNavController()
                 val items = listOf(
                     Screen.Home,
