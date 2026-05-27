@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -163,20 +164,25 @@ fun HomeScreen(
                             Text("Download Link", style = MaterialTheme.typography.labelMedium)
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                Button(onClick = { copyToClipboard(context, downloadUrl, "Download Link") }) {
-                                    Icon(Icons.Default.ContentCopy, contentDescription = null)
+                                Button(onClick = { copyToClipboard(context, downloadUrl, "Download Link") }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(0.dp)) {
+                                    Icon(Icons.Default.ContentCopy, contentDescription = null, modifier = Modifier.size(18.dp))
                                     Spacer(Modifier.width(4.dp))
-                                    Text("Copy")
+                                    Text("Copy", maxLines = 1)
                                 }
                                 Button(onClick = { 
                                     val i = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
                                     context.startActivity(i) 
-                                }) {
-                                    Icon(Icons.Default.Download, contentDescription = null)
+                                }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(0.dp)) {
+                                    Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(18.dp))
                                     Spacer(Modifier.width(4.dp))
-                                    Text("Open")
+                                    Text("Open", maxLines = 1)
+                                }
+                                Button(onClick = { shareLink(context, downloadUrl) }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(0.dp)) {
+                                    Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(18.dp))
+                                    Spacer(Modifier.width(4.dp))
+                                    Text("Share", maxLines = 1)
                                 }
                             }
                             
@@ -185,19 +191,24 @@ fun HomeScreen(
                             Text("Stream Link", style = MaterialTheme.typography.labelMedium)
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                Button(onClick = { copyToClipboard(context, streamUrl, "Stream Link") }) {
-                                    Icon(Icons.Default.ContentCopy, contentDescription = null)
+                                Button(onClick = { copyToClipboard(context, streamUrl, "Stream Link") }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(0.dp)) {
+                                    Icon(Icons.Default.ContentCopy, contentDescription = null, modifier = Modifier.size(18.dp))
                                     Spacer(Modifier.width(4.dp))
-                                    Text("Copy")
+                                    Text("Copy", maxLines = 1)
                                 }
                                 Button(onClick = { 
                                     openStreamInPlayer(context, streamUrl, status.original_filename)
-                                }) {
-                                    Icon(Icons.Default.PlayArrow, contentDescription = null)
+                                }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(0.dp)) {
+                                    Icon(Icons.Default.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
                                     Spacer(Modifier.width(4.dp))
-                                    Text("Open")
+                                    Text("Open", maxLines = 1)
+                                }
+                                Button(onClick = { shareLink(context, streamUrl) }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(0.dp)) {
+                                    Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(18.dp))
+                                    Spacer(Modifier.width(4.dp))
+                                    Text("Share", maxLines = 1)
                                 }
                             }
                             } else if (status.status == "error") {
@@ -247,6 +258,14 @@ fun openStreamInPlayer(context: Context, streamUrl: String, filename: String?) {
             Toast.makeText(context, "No app found to open this link", Toast.LENGTH_SHORT).show()
         }
     }
+}
+
+fun shareLink(context: Context, url: String) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, url)
+    }
+    context.startActivity(Intent.createChooser(intent, "Share Link"))
 }
 
 fun formatSize(bytes: Long): String {

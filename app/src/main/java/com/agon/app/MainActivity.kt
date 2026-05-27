@@ -13,6 +13,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.UploadFile
+import androidx.compose.material.icons.filled.CloudUpload
+import androidx.compose.material.icons.filled.CloudUpload
+import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,6 +32,9 @@ import com.agon.app.data.ThemeMode
 import com.agon.app.ui.screens.HomeScreen
 import com.agon.app.ui.screens.HistoryScreen
 import com.agon.app.ui.screens.SettingsScreen
+import com.agon.app.ui.screens.CloudTransferScreen
+import com.agon.app.ui.screens.CloudTransferScreen
+import com.agon.app.ui.screens.CloudTransferScreen
 import com.agon.app.ui.screens.UploadScreen
 import com.agon.app.ui.theme.AgonAppTheme
 import com.agon.app.viewmodel.SettingsViewModel
@@ -67,6 +73,7 @@ class MainActivity : ComponentActivity() {
                     Screen.Home,
                     Screen.Upload,
                     Screen.History,
+                    Screen.CloudTransfer,
                     Screen.Settings
                 )
 
@@ -83,6 +90,7 @@ class MainActivity : ComponentActivity() {
                                                 Screen.Home -> Icons.Filled.Home
                                                 Screen.Upload -> Icons.Default.UploadFile
                                                 Screen.History -> Icons.Filled.History
+                                                Screen.CloudTransfer -> Icons.Filled.CloudUpload
                                                 Screen.Settings -> Icons.Filled.Settings
                                             },
                                             contentDescription = null
@@ -112,6 +120,7 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.Home.route) { HomeScreen() }
                         composable(Screen.Upload.route) { UploadScreen() }
                         composable(Screen.History.route) { HistoryScreen() }
+                        composable(Screen.CloudTransfer.route) { CloudTransferScreen() }
                         composable(Screen.Settings.route) { SettingsScreen() }
                     }
                 }
@@ -124,5 +133,6 @@ sealed class Screen(val route: String) {
     object Home : Screen("Home")
     object Upload : Screen("Upload")
     object History : Screen("History")
+    object CloudTransfer : Screen("Cloud Transfer")
     object Settings : Screen("Settings")
 }

@@ -28,6 +28,22 @@ class ApiClient {
         }
     }
 
+    suspend fun startGoFileTransfer(url: String): Result<DownloadResponse> {
+        return try {
+            val response = client.post("$baseUrl/start_gofile_transfer") {
+                contentType(ContentType.Application.Json)
+                setBody(DownloadRequest(url))
+            }
+            if (response.status.isSuccess()) {
+                Result.success(response.body())
+            } else {
+                Result.failure(Exception("Failed to start GoFile transfer"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun startDownload(url: String): Result<DownloadResponse> {
         return try {
             val response = client.post("$baseUrl/start_download") {

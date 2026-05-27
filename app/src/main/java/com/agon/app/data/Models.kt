@@ -22,7 +22,8 @@ data class StatusResponse(
     val speed: Double? = null,
     val error: String? = null,
     val timestamp: Double? = null,
-    val original_filename: String? = null
+    val original_filename: String? = null,
+    val gofile_url: String? = null
 )
 
 @Serializable
