@@ -193,8 +193,7 @@ fun HomeScreen(
                                     Text("Copy")
                                 }
                                 Button(onClick = { 
-                                    val i = Intent(Intent.ACTION_VIEW, Uri.parse(streamUrl))
-                                    context.startActivity(i) 
+                                    openStreamInPlayer(context, streamUrl, status.original_filename)
                                 }) {
                                     Icon(Icons.Default.PlayArrow, contentDescription = null)
                                     Spacer(Modifier.width(4.dp))
@@ -212,6 +211,40 @@ fun HomeScreen(
                     Text((state as DownloadState.Error).message, color = MaterialTheme.colorScheme.error)
                 }
             }
+        }
+    }
+}
+
+fun openStreamInPlayer(context: Context, streamUrl: String, filename: String?) {
+    val intent = Intent(Intent.ACTION_VIEW)
+    
+    // Guess MIME type or default to video/* to force external media players like MX Player / VLC
+    var mimeType = "video/*"
+    if (filename != null) {
+        val ext = filename.substringAfterLast('.', "").lowercase(Locale.getDefault())
+        mimeType = when (ext) {
+            "mp3", "wav", "ogg", "m4a", "flac", "aac" -> "audio/*"
+            "mp4", "mkv", "webm", "avi", "mov", "flv" -> "video/*"
+            "jpg", "jpeg", "png", "gif", "webp" -> "image/*"
+            "pdf" -> "application/pdf"
+            "apk" -> "application/vnd.android.package-archive"
+            "zip", "rar", "7z" -> "application/zip"
+            else -> "video/*"
+        }
+    }
+    
+    intent.setDataAndType(Uri.parse(streamUrl), mimeType)
+    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    
+    try {
+        context.startActivity(Intent.createChooser(intent, "Open Stream with..."))
+    } catch (e: Exception) {
+        // Fallback to normal URL opening if no player is found
+        val fallbackIntent = Intent(Intent.ACTION_VIEW, Uri.parse(streamUrl))
+        try {
+            context.startActivity(fallbackIntent)
+        } catch (e2: Exception) {
+            Toast.makeText(context, "No app found to open this link", Toast.LENGTH_SHORT).show()
         }
     }
 }

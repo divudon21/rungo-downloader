@@ -117,8 +117,9 @@ fun UploadScreen(viewModel: UploadViewModel = viewModel()) {
                                     Text("Copy")
                                 }
                                 Button(onClick = { 
-                                    val i = Intent(Intent.ACTION_VIEW, Uri.parse(streamUrl))
-                                    context.startActivity(i) 
+                                    // Make sure openStreamInPlayer is accessible or duplicate it here.
+                                    // Since it's in HomeScreen.kt we can just call it.
+                                    openStreamInPlayer(context, streamUrl, "video.mp4") // Defaulting to video to trigger player
                                 }) {
                                     Icon(Icons.Default.PlayArrow, contentDescription = null)
                                     Spacer(Modifier.width(4.dp))

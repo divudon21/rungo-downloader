@@ -21,7 +21,8 @@ data class StatusResponse(
     val downloaded: Long? = null,
     val speed: Double? = null,
     val error: String? = null,
-    val timestamp: Double? = null
+    val timestamp: Double? = null,
+    val original_filename: String? = null
 )
 
 @Serializable

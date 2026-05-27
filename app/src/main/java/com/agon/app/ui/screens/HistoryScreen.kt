@@ -78,8 +78,7 @@ fun HistoryScreen(viewModel: HistoryViewModel = viewModel()) {
                                             Text("Download")
                                         }
                                         Button(onClick = { 
-                                            val i = Intent(Intent.ACTION_VIEW, Uri.parse(apiClient.getStreamUrl(item.task_id)))
-                                            context.startActivity(i)
+                                            openStreamInPlayer(context, apiClient.getStreamUrl(item.task_id), item.original_filename)
                                         }) {
                                             Icon(Icons.Default.PlayArrow, contentDescription = null)
                                             Spacer(Modifier.width(4.dp))
