@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:2:1-23:12
-INJECTED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:2:1-23:12
-INJECTED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:2:1-23:12
-INJECTED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:2:1-23:12
+ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:2:1-28:12
+INJECTED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:2:1-28:12
+INJECTED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:2:1-28:12
+INJECTED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:2:1-28:12
 MERGED from [androidx.navigation:navigation-runtime-android:2.9.7] /opt/gradle-home/caches/8.11.1/transforms/b92129a2f1806d8b977361ac81562e6a/transformed/navigation-runtime-release/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-common-android:2.9.7] /opt/gradle-home/caches/8.11.1/transforms/2bc07dd9c4111091f92586256dba2d01/transformed/navigation-common-release/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-compose-android:2.9.7] /opt/gradle-home/caches/8.11.1/transforms/facc4375c3029f2f1cba5cb2aa889f9b/transformed/navigation-compose-release/AndroidManifest.xml:2:1-7:12
@@ -98,9 +98,21 @@ uses-permission#android.permission.INTERNET
 ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:4:5-67
 	android:name
 		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:4:22-64
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:5:5-77
+	android:name
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:5:22-74
+uses-permission#android.permission.FOREGROUND_SERVICE_DATA_SYNC
+ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:6:5-87
+	android:name
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:6:22-84
+uses-permission#android.permission.POST_NOTIFICATIONS
+ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:7:5-77
+	android:name
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:7:22-74
 application
-ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:6:5-21:19
-INJECTED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:6:5-21:19
+ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:9:5-26:19
+INJECTED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:9:5-26:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.10.2] /opt/gradle-home/caches/8.11.1/transforms/d6eb0824797a0a3af48478c52efac793/transformed/ui-tooling/AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.10.2] /opt/gradle-home/caches/8.11.1/transforms/d6eb0824797a0a3af48478c52efac793/transformed/ui-tooling/AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.window:window:1.5.0] /opt/gradle-home/caches/8.11.1/transforms/8f51aadd5101a30c414b593d80986311/transformed/window-1.5.0/AndroidManifest.xml:22:5-29:19
@@ -122,31 +134,41 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /opt/gradle-home/caches/8.1
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.16.0] /opt/gradle-home/caches/8.11.1/transforms/ecf3111fd5d42c709c045fa970edc107/transformed/core-1.16.0/AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:9:9-35
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:12:9-35
 	android:label
-		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:8:9-41
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:11:9-41
+	android:icon
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:13:9-43
 	android:allowBackup
-		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:7:9-35
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:10:9-35
 	android:theme
-		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:10:9-72
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:13:44-107
 activity#com.agon.app.MainActivity
-ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:12:9-20:20
+ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:15:9-23:20
 	android:windowSoftInputMode
-		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:15:13-55
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:18:13-55
 	android:exported
-		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:14:13-36
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:17:13-36
 	android:name
-		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:13:13-41
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:16:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:16:13-19:29
+ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:19:13-22:29
 action#android.intent.action.MAIN
-ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:17:17-69
+ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:20:17-69
 	android:name
-		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:17:25-66
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:20:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:18:17-77
+ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:21:17-77
 	android:name
-		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:18:27-74
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:21:27-74
+service#com.agon.app.service.DownloadService
+ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:25:9-125
+	android:exported
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:25:58-82
+	android:foregroundServiceType
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:25:83-123
+	android:name
+		ADDED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml:25:18-57
 uses-sdk
 INJECTED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /mnt/efs-native/sessions/84172245-8037-40d7-9f6b-83595653083e/agent_1/app/src/main/AndroidManifest.xml

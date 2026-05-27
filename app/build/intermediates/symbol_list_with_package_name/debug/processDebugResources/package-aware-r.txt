@@ -254,6 +254,7 @@ layout notification_template_custom_big
 layout notification_template_icon_group
 layout notification_template_part_chronometer
 layout notification_template_part_time
+mipmap ic_launcher
 string androidx_compose_foundation_autofill
 string androidx_compose_ui_autofill
 string androidx_startup

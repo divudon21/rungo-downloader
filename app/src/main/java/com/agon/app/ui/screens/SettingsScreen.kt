@@ -37,7 +37,7 @@ fun SettingsScreen() {
                     Spacer(modifier = Modifier.height(16.dp))
                     Text("About", style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Rungo Downloader v1.0", style = MaterialTheme.typography.bodyMedium)
+                    Text("FastGo v1.0", style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }

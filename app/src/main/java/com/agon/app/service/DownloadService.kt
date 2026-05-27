@@ -75,7 +75,7 @@ class DownloadService : Service() {
 
     private fun buildNotification(text: String, max: Int, progress: Int): Notification {
         return NotificationCompat.Builder(this, "download_channel")
-            .setContentTitle("Rungo Downloader")
+            .setContentTitle("FastGo")
             .setContentText(text)
             .setSmallIcon(android.R.drawable.stat_sys_download)
             .setProgress(max, progress, max == 0 && progress == 0 && text.contains("Starting"))
