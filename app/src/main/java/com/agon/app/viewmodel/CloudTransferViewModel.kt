@@ -17,11 +17,12 @@ class CloudTransferViewModel : ViewModel() {
     val transferState: StateFlow<CloudTransferState> = _transferState.asStateFlow()
 
     private val _taskId = MutableStateFlow<String?>(null)
+    val taskId: StateFlow<String?> = _taskId.asStateFlow()
 
     fun startTransfer(url: String) {
         viewModelScope.launch {
             _transferState.value = CloudTransferState.Loading
-            val result = apiClient.startGofileTransfer(url)
+            val result = apiClient.startGoFileTransfer(url)
             result.onSuccess { response ->
                 _taskId.value = response.task_id
                 pollStatus(response.task_id)
@@ -36,7 +37,7 @@ class CloudTransferViewModel : ViewModel() {
             while (true) {
                 val result = apiClient.getStatus(taskId)
                 result.onSuccess { status ->
-                    _transferState.value = CloudTransferState.Processing(status)
+                    _transferState.value = CloudTransferState.Transferring(status)
                     if (status.status == "completed" || status.status == "error") {
                         return@launch
                     }
@@ -58,6 +59,6 @@ class CloudTransferViewModel : ViewModel() {
 sealed class CloudTransferState {
     object Idle : CloudTransferState()
     object Loading : CloudTransferState()
-    data class Processing(val status: StatusResponse) : CloudTransferState()
+    data class Transferring(val status: StatusResponse) : CloudTransferState()
     data class Error(val message: String) : CloudTransferState()
 }

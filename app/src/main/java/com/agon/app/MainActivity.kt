@@ -30,8 +30,8 @@ import com.agon.app.data.ThemeMode
 import com.agon.app.ui.screens.HomeScreen
 import com.agon.app.ui.screens.HistoryScreen
 import com.agon.app.ui.screens.SettingsScreen
-import com.agon.app.ui.screens.CloudTransferScreen
 import com.agon.app.ui.screens.UploadScreen
+import com.agon.app.ui.screens.CloudTransferScreen
 import com.agon.app.ui.theme.AgonAppTheme
 import com.agon.app.viewmodel.SettingsViewModel
 

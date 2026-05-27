@@ -5,9 +5,7 @@ import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -30,7 +28,7 @@ fun CloudTransferScreen(viewModel: CloudTransferViewModel = viewModel()) {
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Cloud Transfer") })
+            TopAppBar(title = { Text("Cloud Transfer (GoFile)") })
         }
     ) { paddingValues ->
         Column(
@@ -40,16 +38,10 @@ fun CloudTransferScreen(viewModel: CloudTransferViewModel = viewModel()) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Download to Server -> Upload to GoFile",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
             OutlinedTextField(
                 value = urlInput,
                 onValueChange = { urlInput = it },
-                label = { Text("Enter Direct URL") },
+                label = { Text("Enter URL to transfer to GoFile") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -63,40 +55,31 @@ fun CloudTransferScreen(viewModel: CloudTransferViewModel = viewModel()) {
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = state is CloudTransferState.Idle || state is CloudTransferState.Error || (state is CloudTransferState.Processing && (state as CloudTransferState.Processing).status.status == "completed")
+                enabled = state is CloudTransferState.Idle || state is CloudTransferState.Error || (state is CloudTransferState.Transferring && (state as CloudTransferState.Transferring).status.status == "completed")
             ) {
-                Icon(Icons.Default.CloudUpload, contentDescription = null)
-                Spacer(Modifier.width(8.dp))
-                Text("Start Transfer")
+                Text("Transfer to GoFile")
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
             when (state) {
                 is CloudTransferState.Idle -> {
-                    Text("Enter a URL. The server will download it and automatically upload it to GoFile for you.")
+                    Text("Enter a URL. The server will download it and upload it to GoFile automatically.")
                 }
                 is CloudTransferState.Loading -> {
                     CircularProgressIndicator()
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Starting transfer process...")
+                    Text("Starting transfer...")
                 }
-                is CloudTransferState.Processing -> {
-                    val status = (state as CloudTransferState.Processing).status
+                is CloudTransferState.Transferring -> {
+                    val status = (state as CloudTransferState.Transferring).status
                     
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            val statusText = when(status.status) {
-                                "downloading" -> "Downloading to Server..."
-                                "uploading_to_gofile" -> "Uploading to GoFile..."
-                                "completed" -> "Transfer Complete!"
-                                else -> status.status.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-                            }
-                            
-                            Text("Status: $statusText", fontWeight = FontWeight.Bold, color = if(status.status == "completed") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface)
+                            Text("Status: ${status.status.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}", fontWeight = FontWeight.Bold)
                             
                             if (status.status == "downloading" || status.status == "uploading_to_gofile") {
                                 Spacer(modifier = Modifier.height(8.dp))
@@ -114,22 +97,25 @@ fun CloudTransferScreen(viewModel: CloudTransferViewModel = viewModel()) {
                                 
                                 Spacer(modifier = Modifier.height(8.dp))
                                 
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(formatSize(downloaded) + " / " + formatSize(total))
-                                    if (status.status == "downloading") {
+                                if (status.status == "downloading") {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(formatSize(downloaded) + " / " + formatSize(total))
                                         Text(formatSpeed(speed))
                                     }
+                                } else {
+                                    Text("Processing and uploading to GoFile cloud...", style = MaterialTheme.typography.bodyMedium)
                                 }
                             } else if (status.status == "completed") {
                                 Spacer(modifier = Modifier.height(16.dp))
                                 
-                                val gofileUrl = status.gofile_url ?: ""
+                                Text("Transfer to GoFile Successful!", color = MaterialTheme.colorScheme.primary)
                                 
-                                Text("GoFile Link", style = MaterialTheme.typography.labelMedium)
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(16.dp))
+                                
+                                val gofileUrl = status.gofile_url ?: ""
                                 
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
@@ -138,20 +124,12 @@ fun CloudTransferScreen(viewModel: CloudTransferViewModel = viewModel()) {
                                     Button(onClick = { copyToClipboard(context, gofileUrl, "GoFile Link") }) {
                                         Icon(Icons.Default.ContentCopy, contentDescription = null)
                                         Spacer(Modifier.width(4.dp))
-                                        Text("Copy")
-                                    }
-                                    Button(onClick = { 
-                                        val i = Intent(Intent.ACTION_VIEW, Uri.parse(gofileUrl))
-                                        context.startActivity(i) 
-                                    }) {
-                                        Icon(Icons.Default.OpenInBrowser, contentDescription = null)
-                                        Spacer(Modifier.width(4.dp))
-                                        Text("Open")
+                                        Text("Copy Link")
                                     }
                                     Button(onClick = { 
                                         val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                             type = "text/plain"
-                                            putExtra(Intent.EXTRA_TEXT, "Here is my file: $gofileUrl")
+                                            putExtra(Intent.EXTRA_TEXT, gofileUrl)
                                         }
                                         context.startActivity(Intent.createChooser(shareIntent, "Share GoFile Link"))
                                     }) {
