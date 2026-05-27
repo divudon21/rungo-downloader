@@ -3,11 +3,13 @@ package com.agon.app.ui.screens
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
@@ -18,8 +20,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.rungo.com.viewmodel.DownloadState
-import com.rungo.com.viewmodel.DownloadViewModel
+import com.agon.app.service.DownloadService
+import com.agon.app.viewmodel.DownloadState
+import com.agon.app.viewmodel.DownloadViewModel
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,8 +31,13 @@ fun HomeScreen(
     viewModel: DownloadViewModel = viewModel()
 ) {
     val state by viewModel.downloadState.collectAsState()
+    val storage by viewModel.storageState.collectAsState()
     val context = LocalContext.current
     var urlInput by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchStorage()
+    }
 
     Scaffold(
         topBar = {
@@ -38,7 +46,12 @@ fun HomeScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                ),
+                actions = {
+                    IconButton(onClick = { viewModel.deleteAll() }) {
+                        Icon(Icons.Default.Delete, contentDescription = "Delete All Files")
+                    }
+                }
             )
         }
     ) { paddingValues ->
@@ -49,6 +62,21 @@ fun HomeScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            if (storage != null) {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Server Storage", style = MaterialTheme.typography.titleMedium)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        val usedGb = storage!!.used / (1024.0 * 1024 * 1024)
+                        val totalGb = storage!!.total / (1024.0 * 1024 * 1024)
+                        val freeGb = storage!!.free / (1024.0 * 1024 * 1024)
+                        Text(String.format(Locale.US, "Used: %.2f GB / %.2f GB", usedGb, totalGb))
+                        Text(String.format(Locale.US, "Free: %.2f GB", freeGb))
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
             OutlinedTextField(
                 value = urlInput,
                 onValueChange = { urlInput = it },
@@ -62,7 +90,16 @@ fun HomeScreen(
             Button(
                 onClick = { 
                     if (urlInput.isNotBlank()) {
-                        viewModel.startDownload(urlInput)
+                        viewModel.startDownload(urlInput) { taskId ->
+                            val intent = Intent(context, DownloadService::class.java).apply {
+                                putExtra("TASK_ID", taskId)
+                            }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                context.startForegroundService(intent)
+                            } else {
+                                context.startService(intent)
+                            }
+                        }
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),

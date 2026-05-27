@@ -1,4 +1,4 @@
-package com.rungo.com.data
+package com.agon.app.data
 
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -51,6 +51,45 @@ class ApiClient {
         }
     }
     
+    suspend fun getStorage(): Result<StorageResponse> {
+        return try {
+            val response = client.get("$baseUrl/storage")
+            if (response.status.isSuccess()) {
+                Result.success(response.body())
+            } else {
+                Result.failure(Exception("Failed to get storage"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun deleteAll(): Result<Unit> {
+        return try {
+            val response = client.post("$baseUrl/delete_all")
+            if (response.status.isSuccess()) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Failed to delete all"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getHistory(): Result<HistoryResponse> {
+        return try {
+            val response = client.get("$baseUrl/history")
+            if (response.status.isSuccess()) {
+                Result.success(response.body())
+            } else {
+                Result.failure(Exception("Failed to get history"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     fun getDownloadUrl(taskId: String): String {
         return "$baseUrl/download/$taskId"
     }

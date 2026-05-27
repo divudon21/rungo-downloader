@@ -1,15 +1,21 @@
 package com.agon.app
 
 import android.os.Bundle
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -17,17 +23,33 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.agon.app.ui.screens.HomeScreen
+import com.agon.app.ui.screens.HistoryScreen
 import com.agon.app.ui.screens.SettingsScreen
 import com.agon.app.ui.theme.AgonAppTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        // Handle permission result
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
         setContent {
             AgonAppTheme {
                 val navController = rememberNavController()
                 val items = listOf(
                     Screen.Home,
+                    Screen.History,
                     Screen.Settings
                 )
 
@@ -40,7 +62,11 @@ class MainActivity : ComponentActivity() {
                                 NavigationBarItem(
                                     icon = {
                                         Icon(
-                                            if (screen == Screen.Home) Icons.Filled.Home else Icons.Filled.Settings,
+                                            when(screen) {
+                                                Screen.Home -> Icons.Filled.Home
+                                                Screen.History -> Icons.Filled.History
+                                                Screen.Settings -> Icons.Filled.Settings
+                                            },
                                             contentDescription = null
                                         )
                                     },
@@ -66,6 +92,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(Screen.Home.route) { HomeScreen() }
+                        composable(Screen.History.route) { HistoryScreen() }
                         composable(Screen.Settings.route) { SettingsScreen() }
                     }
                 }
@@ -76,5 +103,6 @@ class MainActivity : ComponentActivity() {
 
 sealed class Screen(val route: String) {
     object Home : Screen("Home")
+    object History : Screen("History")
     object Settings : Screen("Settings")
 }

@@ -1,9 +1,10 @@
-package com.rungo.com.viewmodel
+package com.agon.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rungo.com.data.ApiClient
-import com.rungo.com.data.StatusResponse
+import com.agon.app.data.ApiClient
+import com.agon.app.data.StatusResponse
+import com.agon.app.data.StorageResponse
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,12 +20,37 @@ class DownloadViewModel : ViewModel() {
     private val _taskId = MutableStateFlow<String?>(null)
     val taskId: StateFlow<String?> = _taskId.asStateFlow()
 
-    fun startDownload(url: String) {
+    private val _storageState = MutableStateFlow<StorageResponse?>(null)
+    val storageState: StateFlow<StorageResponse?> = _storageState.asStateFlow()
+
+    init {
+        fetchStorage()
+    }
+
+    fun fetchStorage() {
+        viewModelScope.launch {
+            val result = apiClient.getStorage()
+            if (result.isSuccess) {
+                _storageState.value = result.getOrNull()
+            }
+        }
+    }
+
+    fun deleteAll() {
+        viewModelScope.launch {
+            apiClient.deleteAll()
+            fetchStorage()
+            reset()
+        }
+    }
+
+    fun startDownload(url: String, onStartService: (String) -> Unit) {
         viewModelScope.launch {
             _downloadState.value = DownloadState.Loading
             val result = apiClient.startDownload(url)
             result.onSuccess { response ->
                 _taskId.value = response.task_id
+                onStartService(response.task_id)
                 pollStatus(response.task_id)
             }.onFailure { error ->
                 _downloadState.value = DownloadState.Error(error.message ?: "Failed to start download")
@@ -39,6 +65,7 @@ class DownloadViewModel : ViewModel() {
                 result.onSuccess { status ->
                     _downloadState.value = DownloadState.Downloading(status)
                     if (status.status == "completed" || status.status == "error") {
+                        fetchStorage()
                         return@launch
                     }
                 }.onFailure { error ->
