@@ -1,9 +1,11 @@
 package com.agon.app.ui.screens
 
+import androidx.compose.material.icons.filled.ContentCopy
+import android.net.Uri
+import android.content.Intent
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -158,29 +160,47 @@ fun HomeScreen(
                                 val downloadUrl = viewModel.getDownloadUrl() ?: ""
                                 val streamUrl = viewModel.getStreamUrl() ?: ""
                                 
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceEvenly
-                                ) {
-                                    Button(onClick = { copyToClipboard(context, downloadUrl, "Download Link") }) {
-                                        Icon(Icons.Default.Download, contentDescription = null)
-                                        Spacer(Modifier.width(4.dp))
-                                        Text("Copy Download Link")
-                                    }
+                            Text("Download Link", style = MaterialTheme.typography.labelMedium)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                Button(onClick = { copyToClipboard(context, downloadUrl, "Download Link") }) {
+                                    Icon(Icons.Default.ContentCopy, contentDescription = null)
+                                    Spacer(Modifier.width(4.dp))
+                                    Text("Copy")
                                 }
-                                
-                                Spacer(modifier = Modifier.height(8.dp))
-                                
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceEvenly
-                                ) {
-                                    Button(onClick = { copyToClipboard(context, streamUrl, "Stream Link") }) {
-                                        Icon(Icons.Default.PlayArrow, contentDescription = null)
-                                        Spacer(Modifier.width(4.dp))
-                                        Text("Copy Stream Link")
-                                    }
+                                Button(onClick = { 
+                                    val i = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
+                                    context.startActivity(i) 
+                                }) {
+                                    Icon(Icons.Default.Download, contentDescription = null)
+                                    Spacer(Modifier.width(4.dp))
+                                    Text("Open")
                                 }
+                            }
+                            
+                            Spacer(modifier = Modifier.height(16.dp))
+                            
+                            Text("Stream Link", style = MaterialTheme.typography.labelMedium)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                Button(onClick = { copyToClipboard(context, streamUrl, "Stream Link") }) {
+                                    Icon(Icons.Default.ContentCopy, contentDescription = null)
+                                    Spacer(Modifier.width(4.dp))
+                                    Text("Copy")
+                                }
+                                Button(onClick = { 
+                                    val i = Intent(Intent.ACTION_VIEW, Uri.parse(streamUrl))
+                                    context.startActivity(i) 
+                                }) {
+                                    Icon(Icons.Default.PlayArrow, contentDescription = null)
+                                    Spacer(Modifier.width(4.dp))
+                                    Text("Open")
+                                }
+                            }
                             } else if (status.status == "error") {
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text("Error: ${status.error}", color = MaterialTheme.colorScheme.error)

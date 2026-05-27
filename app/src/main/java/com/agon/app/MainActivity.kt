@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,6 +29,7 @@ import com.agon.app.data.ThemeMode
 import com.agon.app.ui.screens.HomeScreen
 import com.agon.app.ui.screens.HistoryScreen
 import com.agon.app.ui.screens.SettingsScreen
+import com.agon.app.ui.screens.UploadScreen
 import com.agon.app.ui.theme.AgonAppTheme
 import com.agon.app.viewmodel.SettingsViewModel
 
@@ -63,6 +65,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val items = listOf(
                     Screen.Home,
+                    Screen.Upload,
                     Screen.History,
                     Screen.Settings
                 )
@@ -78,6 +81,7 @@ class MainActivity : ComponentActivity() {
                                         Icon(
                                             when(screen) {
                                                 Screen.Home -> Icons.Filled.Home
+                                                Screen.Upload -> Icons.Default.UploadFile
                                                 Screen.History -> Icons.Filled.History
                                                 Screen.Settings -> Icons.Filled.Settings
                                             },
@@ -106,6 +110,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(Screen.Home.route) { HomeScreen() }
+                        composable(Screen.Upload.route) { UploadScreen() }
                         composable(Screen.History.route) { HistoryScreen() }
                         composable(Screen.Settings.route) { SettingsScreen() }
                     }
@@ -117,6 +122,7 @@ class MainActivity : ComponentActivity() {
 
 sealed class Screen(val route: String) {
     object Home : Screen("Home")
+    object Upload : Screen("Upload")
     object History : Screen("History")
     object Settings : Screen("Settings")
 }
