@@ -14,8 +14,6 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.material.icons.filled.CloudUpload
-import androidx.compose.material.icons.filled.CloudUpload
-import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -32,8 +30,6 @@ import com.agon.app.data.ThemeMode
 import com.agon.app.ui.screens.HomeScreen
 import com.agon.app.ui.screens.HistoryScreen
 import com.agon.app.ui.screens.SettingsScreen
-import com.agon.app.ui.screens.CloudTransferScreen
-import com.agon.app.ui.screens.CloudTransferScreen
 import com.agon.app.ui.screens.CloudTransferScreen
 import com.agon.app.ui.screens.UploadScreen
 import com.agon.app.ui.theme.AgonAppTheme
@@ -96,7 +92,7 @@ class MainActivity : ComponentActivity() {
                                             contentDescription = null
                                         )
                                     },
-                                    label = { Text(screen.route) },
+                                    label = { Text(screen.route, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis) },
                                     selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                                     onClick = {
                                         navController.navigate(screen.route) {

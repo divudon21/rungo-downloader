@@ -72,6 +72,8 @@ async def process_gofile_transfer(task_id: str, url: str):
         # 2. Upload to GoFile
         tasks[task_id]["status"] = "uploading_to_gofile"
         tasks[task_id]["speed"] = 0.0
+        # Reset downloaded for upload progress
+        tasks[task_id]["downloaded"] = 0
         
         async with aiohttp.ClientSession() as session:
             # Get server
@@ -79,18 +81,39 @@ async def process_gofile_transfer(task_id: str, url: str):
                 servers_data = await resp.json()
                 server = servers_data["data"]["servers"][0]["name"]
             
-            # Upload
+            # Custom reader to track upload progress
+            def file_sender(file_name):
+                async def sender(req):
+                    with open(file_name, 'rb') as f:
+                        chunk_size = 1024 * 1024
+                        uploaded = 0
+                        while True:
+                            chunk = f.read(chunk_size)
+                            if not chunk:
+                                break
+                            uploaded += len(chunk)
+                            tasks[task_id]["downloaded"] = uploaded
+                            yield chunk
+                return sender
+            
             upload_url = f"https://{server}.gofile.io/uploadFile"
-            with open(file_path, 'rb') as f:
-                data = aiohttp.FormData()
-                data.add_field('file', f, filename=tasks[task_id]["original_filename"])
-                async with session.post(upload_url, data=data) as upload_resp:
-                    upload_result = await upload_resp.json()
-                    if upload_result["status"] == "ok":
-                        tasks[task_id]["gofile_url"] = upload_result["data"]["downloadPage"]
-                        tasks[task_id]["status"] = "completed"
-                    else:
-                        raise Exception("GoFile upload failed")
+            data = aiohttp.FormData()
+            
+            file_size = os.path.getsize(file_path)
+            tasks[task_id]["total_size"] = file_size
+            
+            data.add_field('file', 
+                           file_sender(file_path)(None), 
+                           filename=tasks[task_id]["original_filename"],
+                           content_type='application/octet-stream')
+                           
+            async with session.post(upload_url, data=data) as upload_resp:
+                upload_result = await upload_resp.json()
+                if upload_result["status"] == "ok":
+                    tasks[task_id]["gofile_url"] = upload_result["data"]["downloadPage"]
+                    tasks[task_id]["status"] = "completed"
+                else:
+                    raise Exception("GoFile upload failed")
                         
         # Cleanup local file after successful transfer
         try:
