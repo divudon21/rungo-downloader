@@ -13,17 +13,20 @@ import kotlinx.coroutines.launch
 class CloudTransferViewModel : ViewModel() {
     private val apiClient = ApiClient()
 
-    private val _transferState = MutableStateFlow<TransferState>(TransferState.Idle)
-    val transferState: StateFlow<TransferState> = _transferState.asStateFlow()
+    private val _transferState = MutableStateFlow<CloudTransferState>(CloudTransferState.Idle)
+    val transferState: StateFlow<CloudTransferState> = _transferState.asStateFlow()
+
+    private val _taskId = MutableStateFlow<String?>(null)
 
     fun startTransfer(url: String) {
         viewModelScope.launch {
-            _transferState.value = TransferState.Loading
+            _transferState.value = CloudTransferState.Loading
             val result = apiClient.startGoFileTransfer(url)
             result.onSuccess { response ->
+                _taskId.value = response.task_id
                 pollStatus(response.task_id)
             }.onFailure { error ->
-                _transferState.value = TransferState.Error(error.message ?: "Failed to start transfer")
+                _transferState.value = CloudTransferState.Error(error.message ?: "Failed to start transfer")
             }
         }
     }
@@ -33,27 +36,23 @@ class CloudTransferViewModel : ViewModel() {
             while (true) {
                 val result = apiClient.getStatus(taskId)
                 result.onSuccess { status ->
-                    _transferState.value = TransferState.Transferring(status)
+                    _transferState.value = CloudTransferState.Transferring(status)
                     if (status.status == "completed" || status.status == "error") {
                         return@launch
                     }
                 }.onFailure { error ->
-                    _transferState.value = TransferState.Error(error.message ?: "Failed to get status")
+                    _transferState.value = CloudTransferState.Error(error.message ?: "Failed to get status")
                     return@launch
                 }
                 delay(1000)
             }
         }
     }
-
-    fun reset() {
-        _transferState.value = TransferState.Idle
-    }
 }
 
-sealed class TransferState {
-    object Idle : TransferState()
-    object Loading : TransferState()
-    data class Transferring(val status: StatusResponse) : TransferState()
-    data class Error(val message: String) : TransferState()
+sealed class CloudTransferState {
+    object Idle : CloudTransferState()
+    object Loading : CloudTransferState()
+    data class Transferring(val status: StatusResponse) : CloudTransferState()
+    data class Error(val message: String) : CloudTransferState()
 }

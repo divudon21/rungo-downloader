@@ -10,10 +10,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.UploadFile
-import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -27,15 +27,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.agon.app.data.ThemeMode
+import com.agon.app.ui.screens.CloudTransferScreen
 import com.agon.app.ui.screens.HomeScreen
 import com.agon.app.ui.screens.HistoryScreen
 import com.agon.app.ui.screens.SettingsScreen
 import com.agon.app.ui.screens.UploadScreen
-import com.agon.app.ui.screens.CloudTransferScreen
 import com.agon.app.ui.theme.AgonAppTheme
 import com.agon.app.viewmodel.SettingsViewModel
-
-import com.agon.app.ui.screens.CloudTransferScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -70,8 +68,8 @@ class MainActivity : ComponentActivity() {
                 val items = listOf(
                     Screen.Home,
                     Screen.Upload,
-                    Screen.History,
                     Screen.CloudTransfer,
+                    Screen.History,
                     Screen.Settings
                 )
 
@@ -87,8 +85,8 @@ class MainActivity : ComponentActivity() {
                                             when(screen) {
                                                 Screen.Home -> Icons.Filled.Home
                                                 Screen.Upload -> Icons.Default.UploadFile
+                                                Screen.CloudTransfer -> Icons.Default.CloudUpload
                                                 Screen.History -> Icons.Filled.History
-                                                Screen.CloudTransfer -> Icons.Filled.CloudUpload
                                                 Screen.Settings -> Icons.Filled.Settings
                                             },
                                             contentDescription = null
@@ -117,8 +115,8 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable(Screen.Home.route) { HomeScreen() }
                         composable(Screen.Upload.route) { UploadScreen() }
-                        composable(Screen.History.route) { HistoryScreen() }
                         composable(Screen.CloudTransfer.route) { CloudTransferScreen() }
+                        composable(Screen.History.route) { HistoryScreen() }
                         composable(Screen.Settings.route) { SettingsScreen() }
                     }
                 }
@@ -130,7 +128,7 @@ class MainActivity : ComponentActivity() {
 sealed class Screen(val route: String) {
     object Home : Screen("Home")
     object Upload : Screen("Upload")
-    object History : Screen("History")
     object CloudTransfer : Screen("Transfer")
+    object History : Screen("History")
     object Settings : Screen("Settings")
 }

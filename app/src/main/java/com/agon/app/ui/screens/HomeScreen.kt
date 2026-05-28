@@ -1,21 +1,18 @@
 package com.agon.app.ui.screens
 
-import androidx.compose.material.icons.filled.ContentCopy
-import android.net.Uri
-import android.content.Intent
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.os.Build
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -95,7 +92,7 @@ fun HomeScreen(
                             val intent = Intent(context, DownloadService::class.java).apply {
                                 putExtra("TASK_ID", taskId)
                             }
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                                 context.startForegroundService(intent)
                             } else {
                                 context.startService(intent)
@@ -155,64 +152,44 @@ fun HomeScreen(
                                 }
                             } else if (status.status == "completed") {
                                 Spacer(modifier = Modifier.height(16.dp))
-                                
                                 Text("File downloaded successfully to server!", color = MaterialTheme.colorScheme.primary)
-                                
                                 Spacer(modifier = Modifier.height(16.dp))
                                 
                                 val downloadUrl = viewModel.getDownloadUrl() ?: ""
                                 val streamUrl = viewModel.getStreamUrl() ?: ""
                                 
-                            Text("Download Link", style = MaterialTheme.typography.labelMedium)
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Button(onClick = { copyToClipboard(context, downloadUrl, "Download Link") }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(0.dp)) {
-                                    Icon(Icons.Default.ContentCopy, contentDescription = null, modifier = Modifier.size(18.dp))
-                                    Spacer(Modifier.width(4.dp))
-                                    Text("Copy", maxLines = 1)
+                                Text("Download Link", style = MaterialTheme.typography.labelMedium)
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                                    IconButton(onClick = { copyToClipboard(context, downloadUrl, "Download Link") }) {
+                                        Icon(Icons.Default.ContentCopy, contentDescription = "Copy")
+                                    }
+                                    IconButton(onClick = { 
+                                        val i = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
+                                        context.startActivity(i) 
+                                    }) {
+                                        Icon(Icons.Default.Download, contentDescription = "Open")
+                                    }
+                                    IconButton(onClick = { shareText(context, downloadUrl) }) {
+                                        Icon(Icons.Default.Share, contentDescription = "Share")
+                                    }
                                 }
-                                Button(onClick = { 
-                                    val i = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
-                                    context.startActivity(i) 
-                                }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(0.dp)) {
-                                    Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(18.dp))
-                                    Spacer(Modifier.width(4.dp))
-                                    Text("Open", maxLines = 1)
+                                
+                                Spacer(modifier = Modifier.height(16.dp))
+                                
+                                Text("Stream Link", style = MaterialTheme.typography.labelMedium)
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                                    IconButton(onClick = { copyToClipboard(context, streamUrl, "Stream Link") }) {
+                                        Icon(Icons.Default.ContentCopy, contentDescription = "Copy")
+                                    }
+                                    IconButton(onClick = { 
+                                        openStreamInPlayer(context, streamUrl, status.original_filename)
+                                    }) {
+                                        Icon(Icons.Default.PlayArrow, contentDescription = "Open")
+                                    }
+                                    IconButton(onClick = { shareText(context, streamUrl) }) {
+                                        Icon(Icons.Default.Share, contentDescription = "Share")
+                                    }
                                 }
-                                Button(onClick = { shareLink(context, downloadUrl) }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(0.dp)) {
-                                    Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(18.dp))
-                                    Spacer(Modifier.width(4.dp))
-                                    Text("Share", maxLines = 1)
-                                }
-                            }
-                            
-                            Spacer(modifier = Modifier.height(16.dp))
-                            
-                            Text("Stream Link", style = MaterialTheme.typography.labelMedium)
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Button(onClick = { copyToClipboard(context, streamUrl, "Stream Link") }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(0.dp)) {
-                                    Icon(Icons.Default.ContentCopy, contentDescription = null, modifier = Modifier.size(18.dp))
-                                    Spacer(Modifier.width(4.dp))
-                                    Text("Copy", maxLines = 1)
-                                }
-                                Button(onClick = { 
-                                    openStreamInPlayer(context, streamUrl, status.original_filename)
-                                }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(0.dp)) {
-                                    Icon(Icons.Default.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
-                                    Spacer(Modifier.width(4.dp))
-                                    Text("Open", maxLines = 1)
-                                }
-                                Button(onClick = { shareLink(context, streamUrl) }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(0.dp)) {
-                                    Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(18.dp))
-                                    Spacer(Modifier.width(4.dp))
-                                    Text("Share", maxLines = 1)
-                                }
-                            }
                             } else if (status.status == "error") {
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text("Error: ${status.error}", color = MaterialTheme.colorScheme.error)
@@ -228,10 +205,16 @@ fun HomeScreen(
     }
 }
 
+fun shareText(context: Context, text: String) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, text)
+    }
+    context.startActivity(Intent.createChooser(intent, "Share Link via"))
+}
+
 fun openStreamInPlayer(context: Context, streamUrl: String, filename: String?) {
     val intent = Intent(Intent.ACTION_VIEW)
-    
-    // Guess MIME type or default to video/* to force external media players like MX Player / VLC
     var mimeType = "video/*"
     if (filename != null) {
         val ext = filename.substringAfterLast('.', "").lowercase(Locale.getDefault())
@@ -245,14 +228,11 @@ fun openStreamInPlayer(context: Context, streamUrl: String, filename: String?) {
             else -> "video/*"
         }
     }
-    
     intent.setDataAndType(Uri.parse(streamUrl), mimeType)
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    
     try {
         context.startActivity(Intent.createChooser(intent, "Open Stream with..."))
     } catch (e: Exception) {
-        // Fallback to normal URL opening if no player is found
         val fallbackIntent = Intent(Intent.ACTION_VIEW, Uri.parse(streamUrl))
         try {
             context.startActivity(fallbackIntent)
@@ -260,14 +240,6 @@ fun openStreamInPlayer(context: Context, streamUrl: String, filename: String?) {
             Toast.makeText(context, "No app found to open this link", Toast.LENGTH_SHORT).show()
         }
     }
-}
-
-fun shareLink(context: Context, url: String) {
-    val intent = Intent(Intent.ACTION_SEND).apply {
-        type = "text/plain"
-        putExtra(Intent.EXTRA_TEXT, url)
-    }
-    context.startActivity(Intent.createChooser(intent, "Share Link"))
 }
 
 fun formatSize(bytes: Long): String {

@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -85,45 +86,35 @@ fun UploadScreen(viewModel: UploadViewModel = viewModel()) {
                             val streamUrl = viewModel.getStreamUrl() ?: ""
                             
                             Text("Download Link", style = MaterialTheme.typography.labelMedium)
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-                                Button(onClick = { copyToClipboard(context, downloadUrl, "Download Link") }) {
-                                    Icon(Icons.Default.ContentCopy, contentDescription = null)
-                                    Spacer(Modifier.width(4.dp))
-                                    Text("Copy")
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                                IconButton(onClick = { copyToClipboard(context, downloadUrl, "Download Link") }) {
+                                    Icon(Icons.Default.ContentCopy, contentDescription = "Copy")
                                 }
-                                Button(onClick = { 
+                                IconButton(onClick = { 
                                     val i = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
                                     context.startActivity(i) 
                                 }) {
-                                    Icon(Icons.Default.Download, contentDescription = null)
-                                    Spacer(Modifier.width(4.dp))
-                                    Text("Open")
+                                    Icon(Icons.Default.Download, contentDescription = "Open")
+                                }
+                                IconButton(onClick = { shareText(context, downloadUrl) }) {
+                                    Icon(Icons.Default.Share, contentDescription = "Share")
                                 }
                             }
                             
                             Spacer(modifier = Modifier.height(16.dp))
                             
                             Text("Stream Link", style = MaterialTheme.typography.labelMedium)
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-                                Button(onClick = { copyToClipboard(context, streamUrl, "Stream Link") }) {
-                                    Icon(Icons.Default.ContentCopy, contentDescription = null)
-                                    Spacer(Modifier.width(4.dp))
-                                    Text("Copy")
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                                IconButton(onClick = { copyToClipboard(context, streamUrl, "Stream Link") }) {
+                                    Icon(Icons.Default.ContentCopy, contentDescription = "Copy")
                                 }
-                                Button(onClick = { 
-                                    // Make sure openStreamInPlayer is accessible or duplicate it here.
-                                    // Since it's in HomeScreen.kt we can just call it.
-                                    openStreamInPlayer(context, streamUrl, "video.mp4") // Defaulting to video to trigger player
+                                IconButton(onClick = { 
+                                    openStreamInPlayer(context, streamUrl, "video.mp4") 
                                 }) {
-                                    Icon(Icons.Default.PlayArrow, contentDescription = null)
-                                    Spacer(Modifier.width(4.dp))
-                                    Text("Open")
+                                    Icon(Icons.Default.PlayArrow, contentDescription = "Open")
+                                }
+                                IconButton(onClick = { shareText(context, streamUrl) }) {
+                                    Icon(Icons.Default.Share, contentDescription = "Share")
                                 }
                             }
                         }
