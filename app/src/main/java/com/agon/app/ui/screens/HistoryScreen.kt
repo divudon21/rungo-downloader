@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -68,21 +70,27 @@ fun HistoryScreen(viewModel: HistoryViewModel = viewModel()) {
                                 
                                 if (item.status == "completed" && item.task_id != null) {
                                     Spacer(modifier = Modifier.height(8.dp))
-                                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                        Button(onClick = { 
+                                    Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+                                        IconButton(onClick = { 
+                                            copyToClipboard(context, apiClient.getDownloadUrl(item.task_id), "Download Link")
+                                        }) {
+                                            Icon(Icons.Default.ContentCopy, contentDescription = "Copy")
+                                        }
+                                        IconButton(onClick = { 
                                             val i = Intent(Intent.ACTION_VIEW, Uri.parse(apiClient.getDownloadUrl(item.task_id)))
                                             context.startActivity(i)
                                         }) {
-                                            Icon(Icons.Default.Download, contentDescription = null)
-                                            Spacer(Modifier.width(4.dp))
-                                            Text("Download")
+                                            Icon(Icons.Default.Download, contentDescription = "Download")
                                         }
-                                        Button(onClick = { 
+                                        IconButton(onClick = { 
                                             openStreamInPlayer(context, apiClient.getStreamUrl(item.task_id), item.original_filename)
                                         }) {
-                                            Icon(Icons.Default.PlayArrow, contentDescription = null)
-                                            Spacer(Modifier.width(4.dp))
-                                            Text("Stream")
+                                            Icon(Icons.Default.PlayArrow, contentDescription = "Stream")
+                                        }
+                                        IconButton(onClick = { 
+                                            shareLink(context, apiClient.getDownloadUrl(item.task_id))
+                                        }) {
+                                            Icon(androidx.compose.material.icons.Icons.Default.Share, contentDescription = "Share")
                                         }
                                     }
                                 }

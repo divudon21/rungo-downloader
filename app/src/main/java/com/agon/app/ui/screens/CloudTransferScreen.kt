@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,8 +17,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.agon.app.viewmodel.CloudTransferState
 import com.agon.app.viewmodel.CloudTransferViewModel
+import com.agon.app.viewmodel.TransferState
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +57,7 @@ fun CloudTransferScreen(viewModel: CloudTransferViewModel = viewModel()) {
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = state is CloudTransferState.Idle || state is CloudTransferState.Error || (state is CloudTransferState.Transferring && (state as CloudTransferState.Transferring).status.status == "completed")
+                enabled = state is TransferState.Idle || state is TransferState.Error || (state is TransferState.Transferring && (state as TransferState.Transferring).status.status == "completed")
             ) {
                 Icon(Icons.Default.CloudUpload, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
@@ -66,31 +67,38 @@ fun CloudTransferScreen(viewModel: CloudTransferViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(32.dp))
 
             when (state) {
-                is CloudTransferState.Idle -> {
-                    Text("Server will download the file and automatically upload it to GoFile.")
+                is TransferState.Idle -> {
+                    Text("Server will download the file and directly upload it to GoFile.")
                 }
-                is CloudTransferState.Loading -> {
+                is TransferState.Loading -> {
                     CircularProgressIndicator()
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Starting transfer process...")
+                    Text("Starting transfer task...")
                 }
-                is CloudTransferState.Transferring -> {
-                    val status = (state as CloudTransferState.Transferring).status
+                is TransferState.Transferring -> {
+                    val status = (state as TransferState.Transferring).status
                     
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Status: ${status.status.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}", fontWeight = FontWeight.Bold)
+                            val displayStatus = when(status.status) {
+                                "downloading" -> "Downloading to Server..."
+                                "uploading_to_gofile" -> "Uploading to GoFile..."
+                                "completed" -> "Completed!"
+                                else -> status.status.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                            }
+                            
+                            Text("Status: $displayStatus", fontWeight = FontWeight.Bold)
                             
                             if (status.status == "downloading") {
+                                Spacer(modifier = Modifier.height(8.dp))
                                 val total = status.total_size ?: 0L
                                 val downloaded = status.downloaded ?: 0L
                                 val speed = status.speed ?: 0.0
                                 val progress = if (total > 0) downloaded.toFloat() / total.toFloat() else 0f
                                 
-                                Spacer(modifier = Modifier.height(8.dp))
                                 LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -101,27 +109,35 @@ fun CloudTransferScreen(viewModel: CloudTransferViewModel = viewModel()) {
                                 Spacer(modifier = Modifier.height(8.dp))
                                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                                 Spacer(modifier = Modifier.height(8.dp))
-                                Text("Uploading file from server to GoFile cloud...")
+                                Text("Please wait, sending file to GoFile servers...")
                             } else if (status.status == "completed") {
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Text("Transfer completed!", color = MaterialTheme.colorScheme.primary)
+                                Text("File transferred to GoFile successfully!", color = MaterialTheme.colorScheme.primary)
                                 Spacer(modifier = Modifier.height(16.dp))
                                 
                                 val gofileUrl = status.gofile_url ?: ""
                                 
-                                Text("GoFile Link", style = MaterialTheme.typography.labelMedium)
-                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                                    IconButton(onClick = { copyToClipboard(context, gofileUrl, "GoFile Link") }) {
-                                        Icon(Icons.Default.ContentCopy, contentDescription = "Copy")
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
+                                ) {
+                                    Button(onClick = { copyToClipboard(context, gofileUrl, "GoFile Link") }) {
+                                        Icon(Icons.Default.ContentCopy, contentDescription = null)
+                                        Spacer(Modifier.width(4.dp))
+                                        Text("Copy")
                                     }
-                                    IconButton(onClick = { 
+                                    Button(onClick = { 
                                         val i = Intent(Intent.ACTION_VIEW, Uri.parse(gofileUrl))
                                         context.startActivity(i) 
                                     }) {
-                                        Icon(Icons.Default.CloudUpload, contentDescription = "Open GoFile")
+                                        Icon(Icons.Default.OpenInBrowser, contentDescription = null)
+                                        Spacer(Modifier.width(4.dp))
+                                        Text("Open")
                                     }
-                                    IconButton(onClick = { shareText(context, gofileUrl) }) {
-                                        Icon(Icons.Default.Share, contentDescription = "Share")
+                                    Button(onClick = { shareLink(context, gofileUrl) }) {
+                                        Icon(Icons.Default.Share, contentDescription = null)
+                                        Spacer(Modifier.width(4.dp))
+                                        Text("Share")
                                     }
                                 }
                             } else if (status.status == "error") {
@@ -131,8 +147,8 @@ fun CloudTransferScreen(viewModel: CloudTransferViewModel = viewModel()) {
                         }
                     }
                 }
-                is CloudTransferState.Error -> {
-                    Text((state as CloudTransferState.Error).message, color = MaterialTheme.colorScheme.error)
+                is TransferState.Error -> {
+                    Text((state as TransferState.Error).message, color = MaterialTheme.colorScheme.error)
                 }
             }
         }

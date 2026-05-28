@@ -96,7 +96,7 @@ fun UploadScreen(viewModel: UploadViewModel = viewModel()) {
                                 }) {
                                     Icon(Icons.Default.Download, contentDescription = "Open")
                                 }
-                                IconButton(onClick = { shareText(context, downloadUrl) }) {
+                                IconButton(onClick = { shareLink(context, downloadUrl) }) {
                                     Icon(Icons.Default.Share, contentDescription = "Share")
                                 }
                             }
@@ -113,7 +113,7 @@ fun UploadScreen(viewModel: UploadViewModel = viewModel()) {
                                 }) {
                                     Icon(Icons.Default.PlayArrow, contentDescription = "Open")
                                 }
-                                IconButton(onClick = { shareText(context, streamUrl) }) {
+                                IconButton(onClick = { shareLink(context, streamUrl) }) {
                                     Icon(Icons.Default.Share, contentDescription = "Share")
                                 }
                             }

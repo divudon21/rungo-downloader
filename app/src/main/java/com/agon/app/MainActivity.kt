@@ -128,7 +128,7 @@ class MainActivity : ComponentActivity() {
 sealed class Screen(val route: String) {
     object Home : Screen("Home")
     object Upload : Screen("Upload")
-    object CloudTransfer : Screen("Transfer")
     object History : Screen("History")
+    object CloudTransfer : Screen("Transfer")
     object Settings : Screen("Settings")
 }

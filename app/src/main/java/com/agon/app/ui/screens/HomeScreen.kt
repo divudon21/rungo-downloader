@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -254,6 +255,16 @@ fun formatSpeed(bytesPerSec: Double): String {
     val units = arrayOf("B/s", "KB/s", "MB/s", "GB/s")
     val digitGroups = (Math.log10(bytesPerSec) / Math.log10(1024.0)).toInt()
     return String.format(Locale.getDefault(), "%.1f %s", bytesPerSec / Math.pow(1024.0, digitGroups.toDouble()), units[digitGroups])
+}
+
+fun shareLink(context: Context, link: String) {
+    val sendIntent: Intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, link)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(sendIntent, null)
+    context.startActivity(shareIntent)
 }
 
 fun copyToClipboard(context: Context, text: String, label: String) {
