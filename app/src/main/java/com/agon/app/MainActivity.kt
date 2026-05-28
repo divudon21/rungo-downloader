@@ -35,6 +35,8 @@ import com.agon.app.ui.screens.CloudTransferScreen
 import com.agon.app.ui.theme.AgonAppTheme
 import com.agon.app.viewmodel.SettingsViewModel
 
+import com.agon.app.ui.screens.CloudTransferScreen
+
 class MainActivity : ComponentActivity() {
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -129,6 +131,6 @@ sealed class Screen(val route: String) {
     object Home : Screen("Home")
     object Upload : Screen("Upload")
     object History : Screen("History")
-    object CloudTransfer : Screen("Cloud Transfer")
+    object CloudTransfer : Screen("Transfer")
     object Settings : Screen("Settings")
 }
